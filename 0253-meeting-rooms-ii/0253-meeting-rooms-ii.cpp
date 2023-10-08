@@ -2,6 +2,8 @@ class Solution {
 public:
 int minMeetingRooms(vector<vector<int>>& intervals) {
     vector<pair<int,int>> arr;
+    // 
+    //  
     for(int i=0; i<intervals.size(); i++){
         arr.push_back({intervals[i][0], 1});
         arr.push_back({intervals[i][1], -1});
