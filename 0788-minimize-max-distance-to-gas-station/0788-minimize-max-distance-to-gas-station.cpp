@@ -28,7 +28,7 @@ bool hasDecimal(long double num) {
     // Check if the fractional part is greater than 0
     return fractionalPart > 0;
 }
-bool isRequiredGasStationMoreThanK(vector<int> &arr, int k, long double maxDist){
+int isRequiredGasStationMoreThanK(vector<int> &arr, int k, long double maxDist){
     int c=0;
     for(int i=1; i<arr.size(); i++){
         long double inBetweenStation = (arr[i]-arr[i-1])/maxDist;
@@ -36,11 +36,11 @@ bool isRequiredGasStationMoreThanK(vector<int> &arr, int k, long double maxDist)
         if(!hasDecimal(inBetweenStation)){
             c--;
         }
-        if(c>k){
-            return true;
-        }
+        // if(c>k){
+        //     return true;
+        // }
     }
-    return false;    
+    return c;    
 }
 double minmaxGasDist(vector<int> &arr, int k){
     long double l=0, h=0;
@@ -49,7 +49,7 @@ double minmaxGasDist(vector<int> &arr, int k){
     }
     while((h-l) > (1e-6)){
         long double m = (l+h)/2.0;
-        if(isRequiredGasStationMoreThanK(arr, k, m)){
+        if(isRequiredGasStationMoreThanK(arr, k, m)>k){
             l=m;
         }else{
             h=m;
