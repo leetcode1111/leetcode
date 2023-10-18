@@ -7,10 +7,10 @@ public:
         
         int m = nums1.size(), n = nums2.size();
         int left = 0, right = m;
-        
+        int half = (m+n+1)/2;
         while (left <= right) {
             int partitionA = (left + right) / 2;
-            int partitionB = (m + n + 1) / 2 - partitionA;
+            int partitionB = half - partitionA;
             
             int maxLeftA = (partitionA == 0) ? INT_MIN : nums1[partitionA - 1];
             int minRightA = (partitionA == m) ? INT_MAX : nums1[partitionA];
