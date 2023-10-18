@@ -1,35 +1,37 @@
 class Solution {
 public:
-    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        if (nums1.size() > nums2.size()) {
-            return findMedianSortedArrays(nums2, nums1);
-        }
+double findMedianSortedArrays(vector<int>& A, vector<int>& B) {
+    int n1=A.size(), n2=B.size();
+    // n1 should be smaller
+    if(n1>n2){
+        return findMedianSortedArrays(B, A);
+    }
+
+    int half = (n1+n2)/2;
+    int l=0, r=n1-1;
+    while(true){
+        int i = floor((l+r)/2.0);
+        int j = half - i - 2;
+        int Aleft = (i >= 0)? A[i]:INT_MIN;
+        int Aright = (i+1 < n1)? A[i+1]:INT_MAX;
+        int Bleft = (j >= 0)? B[j]:INT_MIN;
+        int Bright = (j+1 < n2)? B[j+1]:INT_MAX;
         
-        int m = nums1.size(), n = nums2.size();
-        int left = 0, right = m;
-        int half = (m+n+1)/2;
-        while (left <= right) {
-            int partitionA = (left + right) / 2;
-            int partitionB = half - partitionA;
-            
-            int maxLeftA = (partitionA == 0) ? INT_MIN : nums1[partitionA - 1];
-            int minRightA = (partitionA == m) ? INT_MAX : nums1[partitionA];
-            int maxLeftB = (partitionB == 0) ? INT_MIN : nums2[partitionB - 1];
-            int minRightB = (partitionB == n) ? INT_MAX : nums2[partitionB];
-            
-            if (maxLeftA <= minRightB && maxLeftB <= minRightA) {
-                if ((m + n) % 2 == 0) {
-                    return (max(maxLeftA, maxLeftB) + min(minRightA, minRightB)) / 2.0;
-                } else {
-                    return max(maxLeftA, maxLeftB);
-                }
-            } else if (maxLeftA > minRightB) {
-                right = partitionA - 1;
-            } else {
-                left = partitionA + 1;
+        if(Aleft <= Bright && Bleft <= Aright){
+            if((n1+n2)%2!=0){
+                return min(Aright, Bright);
+            }else{
+                return ((long double)max(Aleft,Bleft)+min(Aright,Bright))/2;
             }
         }
-        
-        return 0.0;
+
+        if(Aleft > Bright){
+            r=i-1;
+        }else{
+            l=i+1;
+        }
     }
+
+    return 0;
+}
 };
