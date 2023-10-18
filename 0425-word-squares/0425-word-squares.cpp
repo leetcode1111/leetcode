@@ -1,12 +1,12 @@
 struct Trie{
-    // Trie* arr[26];
-    vector<Trie*> arr;
+    Trie* arr[26];
+    // vector<Trie*> arr;
     vector<const string *> startsWith;
     Trie(){
-        // for(int i=0; i<26; i++){
-        //     arr[i] = NULL;
-        // }
-        arr.resize(26, NULL);
+        for(int i=0; i<26; i++){
+            arr[i] = NULL;
+        }
+        // arr.resize(26, NULL);
     }
 };
 
