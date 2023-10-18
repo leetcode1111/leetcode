@@ -21,7 +21,7 @@ double findMedianSortedArrays(vector<int>& A, vector<int>& B) {
             if((n1+n2)%2!=0){
                 return min(Aright, Bright);
             }else{
-                return ((long double)max(Aleft,Bleft)+min(Aright,Bright))/2;
+                return (max(Aleft,Bleft)+min(Aright,Bright))/2.0;
             }
         }
 
