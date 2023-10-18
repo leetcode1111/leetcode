@@ -7,8 +7,9 @@ vector<string> findStrobogrammatic(int n, bool isOuterMost=true) {
     if(n==1){
         return {"0","1","8"};
     }
+    vector<string> prevRes = findStrobogrammatic(n-2, false);
     vector<string> res;
-    for(const string &str:findStrobogrammatic(n-2, false)){
+    for(const string &str:prevRes){
         if(!isOuterMost){
             res.push_back("0"+str+"0");
         }
