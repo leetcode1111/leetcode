@@ -62,9 +62,8 @@ void dfs(TrieDs &ds, vector<vector<string>> &res, vector<string> &cur){
     }
 
 }
-class Solution {
-public:
-vector<vector<string>> wordSquares(vector<string>& words) {
+
+vector<vector<string>> myWordSquares(vector<string>& words){
     vector<vector<string>> res;
     TrieDs ds(words);
     vector<string> cur;
@@ -74,5 +73,10 @@ vector<vector<string>> wordSquares(vector<string>& words) {
         cur.pop_back();
     }
     return res;
+}
+class Solution {
+public:
+vector<vector<string>> wordSquares(vector<string>& words) {
+    return myWordSquares(words);
 }
 };
