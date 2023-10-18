@@ -10,7 +10,7 @@ double findMedianSortedArrays(vector<int>& A, vector<int>& B) {
     int half = (n1+n2)/2;
     int l=0, r=n1-1;
     while(true){
-        int i = floor((l+r)/2.0);// to get floor value
+        int i = floor((l+r)/2.0);// to get floor value in negative case as well
         int j = (half - (i+1) - 1);
         int Aleft = (i != -1)? A[i]:INT_MIN;
         int Aright = (i+1 != n1)? A[i+1]:INT_MAX;
