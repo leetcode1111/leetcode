@@ -4,9 +4,6 @@ public:
 
 int dfs(const vector<vector<int>> &jump, vector<bool> &visited, 
             int dot, int remaining_dots){
-    if(remaining_dots<0){
-        return 0;
-    }    
     if(remaining_dots==0){
         return 1;
     }
