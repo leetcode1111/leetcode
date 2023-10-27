@@ -10,4 +10,4 @@ WITH crt1 AS (
 
 SELECT machine_id, ROUND(AVG(diff), 3) as processing_time
 FROM crt1
-group by machine_id;
+group by 1;
