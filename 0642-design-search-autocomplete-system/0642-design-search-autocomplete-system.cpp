@@ -42,7 +42,7 @@ public:
             
             // Check if the new string already exists in the hot sentences or not, if not add
             if(find(root->suggestions.begin(), root->suggestions.end(), idx) == root->suggestions.end())
-                root->suggestions.push_back(idx);
+                root->suggestions.emplace_back(idx);
             
             // Now sort the hot sentences based on the comparison metric
             sort(root->suggestions.begin(), root->suggestions.end(), [this](int idx1, int idx2) -> bool {
@@ -66,7 +66,7 @@ public:
         if(curr && curr->leaves.count(ch)) {
             curr = curr->leaves[ch];
             for(auto idx: curr->suggestions)
-                suggestions.push_back(sentences[idx]);
+                suggestions.emplace_back(sentences[idx]);
         }
         // Current char doesn't exist, so there won't be any match for this
         // query onwards. So set the iterator to null
@@ -83,8 +83,8 @@ public:
             auto it = find(sentences.begin(), sentences.end(), prefix);
             // New sentence found, update its frequency
             if(it == sentences.end()) {
-                sentences.push_back(prefix);
-                freq.push_back(1);
+                sentences.emplace_back(prefix);
+                freq.emplace_back(1);
                 insert(prefix, sentences.size()-1);
             }
             // The prefix already exists
