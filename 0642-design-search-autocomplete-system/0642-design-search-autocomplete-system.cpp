@@ -1,108 +1,87 @@
+struct Node{
+    Node * child[128];
+    vector<int> suggestion;
+    Node(){
+        for(int i=0; i<128; i++){
+            child[i]=NULL;
+        }
+    }
+};
+
 class AutocompleteSystem {
-private:
-    struct TrieNode {
-        unordered_map<char, TrieNode*> leaves;
-        // Stores the index of hot sentence
-        vector<int> suggestions;
-    };
-    // Tracks the root of trie
-    TrieNode* root_ = nullptr;
-    // Trie iterator for a given query
-    TrieNode* curr = nullptr;
-    string prefix;
-    const int TOP_K = 3;
-    
-    // Hot sentences 
+
     vector<string> sentences;
-    // freq[i] = Frequency of ith hot sentence
     vector<int> freq;
+    string prefix;
+    Node *root;
+    Node *cur;
+    const int TOP_K = 3;
+
 public:
     AutocompleteSystem(vector<string>& sentences, vector<int>& times) {
-        // Root of trie
-        root_ = new TrieNode();
-        // Set the query iterator to the trie root
-        curr = root_;
-        // Save the initial list of sentences and their frequencies
         this->sentences = sentences;
         this->freq = times;
-        
-        for(int idx = 0; idx < sentences.size(); idx++) 
-            insert(sentences[idx], idx);
-    }
-    
-    void insert(string str, int idx) {
-        // Trie Iterator 
-        TrieNode* root = root_;
-        
-        // Add the word char by char
-        for(char ch: str) {
-            if(root->leaves.count(ch) == 0)
-                root->leaves[ch] = new TrieNode();
-            root = root->leaves[ch];
-            
-            // Check if the new string already exists in the hot sentences or not, if not add
-            if(find(root->suggestions.begin(), root->suggestions.end(), idx) == root->suggestions.end())
-                root->suggestions.emplace_back(idx);
-            
-            // Now sort the hot sentences based on the comparison metric
-            sort(root->suggestions.begin(), root->suggestions.end(), [this](int idx1, int idx2) -> bool {
-                if(freq[idx1] == freq[idx2]) 
-                    return sentences[idx1] < sentences[idx2];
-                return freq[idx1] > freq[idx2];
-            });
-            
-            // Now if we have more than k suggestions, remove the extra
-            if(root->suggestions.size() > TOP_K)
-                root->suggestions.pop_back();
-                
-            
+        prefix = "";
+        root = new Node();
+        cur = root;
+        for(int i=0; i<sentences.size(); i++){
+            insert(sentences[i], i);
         }
-    }    
-    
-    vector<string> search(char ch) {
-        vector<string> suggestions;
-        // Check if the trie iterator is not null and 
-        // current char exists as well
-        if(curr && curr->leaves.count(ch)) {
-            curr = curr->leaves[ch];
-            for(auto idx: curr->suggestions)
-                suggestions.emplace_back(sentences[idx]);
-        }
-        // Current char doesn't exist, so there won't be any match for this
-        // query onwards. So set the iterator to null
-        else
-            curr = nullptr;
-        return suggestions;
     }
-    
     vector<string> input(char c) {
-        // End of query
-        if(c == '#') {
-            // Add the prefix to Trie
-            // Check if the prefix is already added or not
+        if(c=='#'){
             auto it = find(sentences.begin(), sentences.end(), prefix);
-            // New sentence found, update its frequency
-            if(it == sentences.end()) {
-                sentences.emplace_back(prefix);
-                freq.emplace_back(1);
+            if(it==sentences.end()){
+                sentences.push_back(prefix);
+                freq.push_back(1);
                 insert(prefix, sentences.size()-1);
+            }else{
+                int ind = it-sentences.begin();
+                freq[ind]++;
+                insert(prefix, ind);
             }
-            // The prefix already exists
-            else {
-                int idx = it - sentences.begin();
-                freq[idx] += 1;
-                insert(prefix, idx);
-            }
-                
-            // Now that query has ended, reset current iterator and query prefix
-            curr = root_;
-            prefix.clear();
-            
-            return vector<string>{};
+            prefix = "";
+            cur=root;
+            return {};
         }
-        // Add the current char to the ongoing query prefix
-        prefix += c;
-        // Get the suggestions for the prefix ending at current char
+        prefix.push_back(c);
         return search(c);
+    }
+    void insert(string &sentence, int ind){
+        Node *temp=root;
+        for(const char &c:sentence){
+            if(temp->child[c]==NULL){
+                temp->child[c] = new Node();
+            }
+            temp = temp->child[c];
+            // check weather ind already exist if it exist then it means 
+            // we call this function for sorting purpose based on freq
+            auto it = find(temp->suggestion.begin(), temp->suggestion.end(), ind);
+            if(it == temp->suggestion.end()){
+                temp->suggestion.push_back(ind);
+            }
+            sort(temp->suggestion.begin(), temp->suggestion.end(), 
+                    [this](int ind1, int ind2) -> bool {
+                        if(freq[ind1]==freq[ind2]){
+                            return sentences[ind1] < sentences[ind2]; 
+                        }
+                        return  freq[ind1] > freq[ind2];
+            });
+            if(temp->suggestion.size() > TOP_K){
+                temp->suggestion.pop_back();
+            }
+        }
+    }
+    vector<string> search(char c){
+        vector<string> res;
+        if(cur!=NULL && cur->child[c]!=NULL){
+            cur = cur->child[c];
+            for(int ind:cur->suggestion){
+                res.push_back(sentences[ind]);
+            }
+        }else{
+            cur=NULL;
+        }
+        return res;
     }
 };
