@@ -2,7 +2,7 @@ class Solution {
 public:
 // preorder root, left, right
     void f(vector<int>& arr, int minVal, int maxVal){
-        if(arr.empty() || arr.back()<=minVal || arr.back()>=maxVal){
+        if(arr.empty() || arr.back()<minVal || arr.back()>maxVal){
             return;
         }
         int curVal = arr.back();
